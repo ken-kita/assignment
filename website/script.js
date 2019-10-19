@@ -21,8 +21,7 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('recent1').href="#article1"
   document.getElementById('recent2').textContent=document.querySelector('#article2 h2').textContent;
   document.getElementById('recent2').href="#article2"
-  //document.getElementById('recent1').textContent=document.querySelector('#result').textContent;
-  //document.querySelector('#1').textContent;
+
 
 //後から記事を追加されても、「記事一覧」を自動で表示し、リンク先もつける
 var frag= document.createDocumentFragment();
@@ -49,21 +48,6 @@ document.getElementById('lists').appendChild(frag);
 //検索機能（後から追加されても検索対象にできる）
   document.getElementById('btn').addEventListener('click',function(){
 
-
-/*
-    var word= document.getElementById('tx').value;
-
-    var article1=document.getElementById('article1')
-    var content1=article1.textContent;
-    console.log(article1);
-    var num=content1.indexOf(word);
-    console.log(num);
-    if(num!==-1){
-      article1.style.display='block'
-    }else {
-      article1. style.display='none'
-    }
-*/
 
 
     document.getElementById('result').style.display='block';
