@@ -1,0 +1,142 @@
+
+html{
+scroll-behavior:smooth;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+header{
+  width:100%;
+}
+.header h1 a{
+  display:block;
+  width:225px;
+  height:56px;
+  font-size: 40px;
+  text-decoration:none;
+  margin:0 auto;
+  color:blue;
+  text-align:center;
+}
+.wrapper{
+  width:970px;
+  margin:30px auto 40px;
+}
+
+.clearfix::after{
+  content:'';
+  display:block;
+  clear:both;
+}
+.main{
+  display:block;
+  float:left;
+  width:660px;
+}
+.normalOpacity{
+  opacity:1;
+  cursor:pointer;
+}
+.lowOpacity{
+  text-decoration: underline;
+  opacity:0.8;
+  cursor:pointer;
+}
+.normal-article{
+  position:relative;
+  display:block;
+}
+.clicked-article{
+  position:relative;
+}
+.normal-article time,
+.clicked-article time{
+  display:block;
+  text-align:right;
+  font-size: 6px;
+  opacity:0.5;
+  margin-top:0px;
+}
+.normal-article .article-text{
+  margin-top:0px;
+  margin-bottom:0px;
+  height:200px;
+  white-space: pre-wrap;
+  line-height: 25px;
+  overflow: hidden;
+}
+.clicked-article .article-text{
+  white-space: pre-wrap;
+  line-height:25px;
+}
+.normal-article .article-continue{
+  margin-top:0px;
+  padding-top:0px;
+  color:blue;
+}
+.clicked-article .article-continue{
+  display:none;
+}
+.normal-article .article-return{
+  display: none;
+}
+.clicked-article .article-return{
+  display:block;
+}
+.clicked-article .article-return a{
+  text-decoration: none;
+}
+.sidemenu{
+  float:right;
+  width:275px;
+}
+.search-function .searchWord-input{
+  width:180px;
+  height:26px;
+}
+.search-function .search-button{
+  width:40px;
+  height:26px;
+  background-color:red;
+  color:white;
+  cursor:pointer
+}
+.recentArticles li{
+  transition:0.15s;
+}
+.recentArticles li :hover{
+  opacity:0.7;
+}
+.footer{
+  width:100%;
+  background-color:#2d3d54;
+}
+.footer a{
+  color:white;
+  float:right;
+  padding:10px 50px 0 0;
+  font-size:1.6rem;
+  text-decoration: none;
+  transition: 0.15s;
+}
+.footer a:hover{
+  text-decoration: underline;
+}
+.header, .footer{
+ height:100px;
+}
