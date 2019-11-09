@@ -118,7 +118,8 @@ class Board extends React.Component{
     //predictivethink
     var chanceZone=this.predictiveAttackThinking(squares,nullList)[0];
     var dangerZone=this.predictiveDefenceThinking(squares,nullList)[0];
-    var prospectiveDoubleChanceZone=this.prospectiveDoubleChanceZoneThinking(squares,nullList);
+    var prospectiveDoubleChanceZone=this.prospectiveChanceZoneThinking(squares,nullList)[0];
+    var prospectiveOneChanceZone=this.prospectiveChanceZoneThinking(squares,nullList)[1];
     var prospectiveDoubleDangerZone=this.prospectiveDoubleDangerZoneThinking(squares,aroundSelectedNullList);
 
 
@@ -138,6 +139,8 @@ class Board extends React.Component{
       this.thinkProspectiveChance(squares,prospectiveDoubleChanceZone)
     }else if(prospectiveDoubleDangerZone.length!==0){
       this.thinkProspectiveDanger(squares,prospectiveDoubleDangerZone)
+    }else if(prospectiveOneChanceZone.length!==0){
+      this.thinkProspectiveChance(squares,prospectiveOneChanceZone)
     }else if(defaultPlay.length!==0){
       this.thinkDefaultPlay(squares,defaultPlay)
     }else if(prevent2.length!==0){
@@ -364,8 +367,9 @@ class Board extends React.Component{
     })
     return [dangerZone,dangerDoubleLines]
   }
-  prospectiveDoubleChanceZoneThinking(squares,nullList){
+  prospectiveChanceZoneThinking(squares,nullList){
     var prospectiveDoubleChanceZone=[];
+    var prospectiveOneChanceZone=[];
     nullList.forEach((value)=>{
       squares[value]='X';
       var newNullList = nullList.filter((item)=> {
@@ -411,6 +415,8 @@ class Board extends React.Component{
           }
 
 
+      }else if(futureChanceZone.length===1){
+        prospectiveOneChanceZone.push(value);
       }
 
 
@@ -425,7 +431,7 @@ class Board extends React.Component{
 
 
     })
-    return prospectiveDoubleChanceZone;
+    return [prospectiveDoubleChanceZone,prospectiveOneChanceZone];
   }
   prospectiveDoubleDangerZoneThinking(squares,aroundSelectedNullList){
     var prospectiveDoubleDangerZone=[];
