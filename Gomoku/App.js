@@ -1,0 +1,921 @@
+import React, { Component } from 'react'
+
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
+
+
+class Board extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(99).fill(null),
+    };
+  }
+
+  componentDidMount() {
+    const squares = this.state.squares.slice();
+    squares[44]='X';
+    squares[45]='O';
+    squares[54]='O';
+    squares[55]='X';
+    this.setState({squares:squares})
+
+}
+
+  think(squares){
+
+
+    var prevent2=[];
+    var defaultPlay=[];
+    for(let i=0;i<lines4.length;i++){
+      const [a,b,c,d]=lines4[i];
+        if (squares[a]==null && squares[b]=='O' && squares[b] === squares[c] && squares[d] == null){
+          prevent2.push(a,d)
+        }else if(squares[a]!=='O' && squares[b]==='X' && squares[c] ==null&& squares[d] !=='O'){
+          defaultPlay.push(c)
+        }else if(squares[a]!=='O' && squares[b]==null && squares[c] ==='X'&& squares[d] !=='O'){
+          defaultPlay.push(b)
+        }
+
+    }
+
+    var lastOne=[]
+    var prevent5=[];
+    for(let j=0;j<lines.length;j++){
+      const [a,b,c,d,e]=lines[j];
+        if (squares[a]==null && squares[b]=='X' && squares[b] === squares[c] && squares[b] === squares[d]&&squares[b]===squares[e]){
+          lastOne.push(a)
+        }else if(squares[a]==='X' && squares[b]==null && squares[a] === squares[c] && squares[a] === squares[d]&&squares[a]==squares[e]){
+          lastOne.push(b)
+        }else if(squares[a]==='X' && squares[a]===squares[b] && squares[c] == null && squares[a] === squares[d]&&squares[a]==squares[e]){
+          lastOne.push(c)
+        }else if(squares[a]==='X' && squares[a]==squares[b] && squares[a] === squares[c] && squares[d] ==null&&squares[a]===squares[e]){
+          lastOne.push(d)
+        }else if(squares[a]==='X' && squares[a]==squares[b] && squares[a] === squares[c] && squares[a] === squares[d]&&squares[e]==null){
+          lastOne.push(e)
+        }else if(squares[a]==null && squares[b]=='O' && squares[b] === squares[c] && squares[b] === squares[d]&&squares[b]===squares[e]){
+          prevent5.push(a)
+        }else if(squares[a]==='O' && squares[b]==null && squares[a] === squares[c] && squares[a] === squares[d]&&squares[a]==squares[e]){
+          prevent5.push(b)
+        }else if(squares[a]==='O' && squares[a]===squares[b] && squares[c] == null && squares[a] === squares[d]&&squares[a]==squares[e]){
+          prevent5.push(c)
+        }else if(squares[a]==='O' && squares[a]==squares[b] && squares[a] === squares[c] && squares[d] ==null&&squares[a]===squares[e]){
+          prevent5.push(d)
+        }else if(squares[a]==='O' && squares[a]==squares[b] && squares[a] === squares[c] && squares[a] ===squares[d]&&squares[e]==null){
+          prevent5.push(e)
+        }
+
+    }
+
+
+    var make4=[];
+    var prevent4=[];
+    for(let k=0;k<lines6.length;k++){
+      const [a,b,c,d,e,f]=lines6[k];
+        if(squares[a]==null && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]==null){
+          make4.push(e)
+        }else if(squares[a]==null && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]==null){
+          make4.push(b)
+        }else if(squares[a]==null && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]==null){
+          make4.push(d)
+        }else if(squares[a]==null && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]==null){
+          make4.push(c)
+        }else if(squares[a]==null && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]==null){
+          prevent4.push(e)
+        }else if(squares[a]==null && squares[b] ==null  && squares[c] === 'O' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]==null){
+          prevent4.push(b)
+        }else if(squares[a]==null && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]==null){
+          prevent4.push(d)
+        }else if(squares[a]==null && squares[b] ==='O'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]==null){
+          prevent4.push(c)
+        }
+
+    }
+
+    var nullList=[];
+    var selectedList=[];
+    for (let i=0;i<100;i++){
+      if(squares[i]==null){
+        nullList.push(i);
+      }else if(squares[i]==='O'){
+        selectedList.push(i);
+      }
+    }
+
+    var aroundSelectedNullList=nullList.filter((value)=>{
+      return (selectedList.indexOf(value+11)!==-1)||(selectedList.indexOf(value+10)!==-1)||(selectedList.indexOf(value+9)!==-1)||(selectedList.indexOf(value+1)!==-1)||(selectedList.indexOf(value-1)!==-1)||(selectedList.indexOf(value-9)!==-1)||(selectedList.indexOf(value-10)!==-1)||(selectedList.indexOf(value-11)!==-1)
+    })
+
+
+
+
+
+    //predictivethink
+    var chanceZone=this.predictiveAttackThinking(squares,nullList)[0];
+    var dangerZone=this.predictiveDefenceThinking(squares,nullList)[0];
+    var prospectiveDoubleChanceZone=this.prospectiveDoubleChanceZoneThinking(squares,nullList);
+    var prospectiveDoubleDangerZone=this.prospectiveDoubleDangerZoneThinking(squares,aroundSelectedNullList);
+
+
+    if(lastOne.length!==0){
+      this.thinkLastOne(squares,lastOne)
+    }else if(prevent5.length!==0){
+      this.thinkPrevent5(squares,prevent5)
+    }else if(make4.length!==0){
+      this.thinkMake4(squares,make4)
+    }else if(prevent4.length!==0){
+      this.thinkPrevent4(squares,prevent4)
+    }else if(chanceZone.length!==0){
+      this.thinkChance(squares,chanceZone)
+    }else if(dangerZone.length!==0){
+      this.thinkDanger(squares,dangerZone)
+    }else if(prospectiveDoubleChanceZone.length!==0){
+      this.thinkProspectiveChance(squares,prospectiveDoubleChanceZone)
+    }else if(prospectiveDoubleDangerZone.length!==0){
+      this.thinkProspectiveDanger(squares,prospectiveDoubleDangerZone)
+    }else if(defaultPlay.length!==0){
+      this.thinkDefaultPlay(squares,defaultPlay)
+    }else if(prevent2.length!==0){
+      this.thinkPrevent2(squares,prevent2)
+    }else{
+      this.thinkRandomplay(squares,nullList)
+    }
+
+    lastOne=[]
+    prevent5=[];
+    make4=[];
+    prevent4=[];
+    prevent2=[];
+    defaultPlay=[]
+  }
+  predictiveAttackThinking(squares,nullList){
+    var chanceZone=[];
+    var chanceDoubleLines=[];
+
+    nullList.forEach((value)=>{
+      squares[value]='X';
+      let makeDouble4=[];
+      let chanceDoubleLinesNumbers=[];
+
+
+      for(let j=0;j<verticalList6.length;j++){
+        const [a,b,c,d,e,f]=verticalList6[j];
+          if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
+            makeDouble4.push(e);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='O'){
+            makeDouble4.push(b);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(d);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(c);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }
+      }
+
+      for(let j=0;j<horizonList6.length;j++){
+        const [a,b,c,d,e,f]=horizonList6[j];
+          if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
+            makeDouble4.push(e);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='O'){
+            makeDouble4.push(b);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(d);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(c);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+      for(let j=0;j<diagonalLeftList6.length;j++){
+        const [a,b,c,d,e,f]=diagonalLeftList6[j];
+          if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
+            makeDouble4.push(e);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='O'){
+            makeDouble4.push(b);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(d);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(c);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+      for(let j=0;j<diagonalRightList6.length;j++){
+        const [a,b,c,d,e,f]=diagonalRightList6[j];
+          if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
+            makeDouble4.push(e);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='O'){
+            makeDouble4.push(b);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(d);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeDouble4.push(c);
+            chanceDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+
+
+
+
+      if(makeDouble4.length>1){
+        chanceZone.push(value);
+        chanceDoubleLines.push(chanceDoubleLinesNumbers);
+      }
+
+      squares[value]=null;
+    })
+
+    return [chanceZone,chanceDoubleLines]
+  }
+
+
+  predictiveDefenceThinking(squares,nullList){
+    var dangerZone=[];
+    var dangerDoubleLines=[];
+    nullList.forEach((value)=>{
+      squares[value]='O';
+      let nextTurnPrevent4=[];
+      let dangerDoubleLinesNumbers=[];
+
+
+
+      for(let j=0;j<verticalList6.length;j++){
+        const [a,b,c,d,e,f]=verticalList6[j];
+          if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='X'){
+            nextTurnPrevent4.push(e);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==null  && squares[c] === 'O' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(b);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(d);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(c);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }
+      }
+
+      for(let j=0;j<horizonList6.length;j++){
+        const [a,b,c,d,e,f]=horizonList6[j];
+          if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='X'){
+            nextTurnPrevent4.push(e);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==null  && squares[c] === 'O' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(b);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(d);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break ;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(c);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+      for(let j=0;j<diagonalLeftList6.length;j++){
+        const [a,b,c,d,e,f]=diagonalLeftList6[j];
+          if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='X'){
+            nextTurnPrevent4.push(e);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==null  && squares[c] === 'O' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(b);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(d);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(c);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+      for(let j=0;j<diagonalRightList6.length;j++){
+        const [a,b,c,d,e,f]=diagonalRightList6[j];
+          if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='X'){
+            nextTurnPrevent4.push(e);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==null  && squares[c] === 'O' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(b);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(d);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }else if(squares[a]!=='X' && squares[b] ==='O'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='X'){
+            nextTurnPrevent4.push(c);
+            dangerDoubleLinesNumbers.push(a,b,c,d,e,f);
+            break;
+          }
+      }
+
+
+
+
+      if(nextTurnPrevent4.length>1){
+        dangerZone.push(value);
+        dangerDoubleLines.push(dangerDoubleLinesNumbers);
+      }
+
+      squares[value]=null;
+    })
+    return [dangerZone,dangerDoubleLines]
+  }
+  prospectiveDoubleChanceZoneThinking(squares,nullList){
+    var prospectiveDoubleChanceZone=[];
+    nullList.forEach((value)=>{
+      squares[value]='X';
+      var newNullList = nullList.filter((item)=> {
+        return item !== value;
+      });
+
+      let makeBefore4=[];
+      for(let i=0;i<lines6.length;i++){
+        const [a,b,c,d,e,f]=lines6[i];
+          if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
+            makeBefore4.push(e);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==null  && squares[c] === 'X' && squares[d] === squares[c] && squares[e] ===squares[c]&& squares[f]!=='O'){
+            makeBefore4.push(b);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] ==null && squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeBefore4.push(d);
+            break ;
+          }else if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] ==null && squares[d] ==squares[b]&& squares[e] ===squares[b]&& squares[f]!=='O'){
+            makeBefore4.push(c);
+            break;
+          }
+      }
+      if(makeBefore4.length>0){
+        squares[value]=null;
+        return null;
+      }else{
+        let predictiveAttackThinking=this.predictiveAttackThinking(squares,newNullList);
+        let futureChanceZone=predictiveAttackThinking[0];
+        if(futureChanceZone.length>1){
+          let isSame='same';
+
+
+          for(let i=0;i<predictiveAttackThinking[1][0].length;i++){
+            if(predictiveAttackThinking[1][1].indexOf(predictiveAttackThinking[1][0][i]===-1)){
+              isSame='different';
+            }
+          }
+
+          var chanceDoubleLines=predictiveAttackThinking[1]
+          if (isSame==='different'){
+            prospectiveDoubleChanceZone.push(value);
+          }
+
+
+      }
+
+
+
+
+
+
+
+      }
+      squares[value]=null;
+
+
+
+    })
+    return prospectiveDoubleChanceZone;
+  }
+  prospectiveDoubleDangerZoneThinking(squares,aroundSelectedNullList){
+    var prospectiveDoubleDangerZone=[];
+    aroundSelectedNullList.forEach((value)=>{
+      squares[value]='O';
+      var newAroundSelectedNullList = aroundSelectedNullList.filter((item)=> {
+        return item !== value;
+      });
+      let predictiveDefenceThinking=this.predictiveDefenceThinking(squares,newAroundSelectedNullList);
+
+
+      var futureDangerZone=predictiveDefenceThinking[0];
+      if (futureDangerZone.length>1){
+
+        let isSame='same';
+
+
+        for(let i=0;i<predictiveDefenceThinking[1][0].length;i++){
+          if(predictiveDefenceThinking[1][1].indexOf(predictiveDefenceThinking[1][0][i]===-1)){
+            isSame='different';
+          }
+        }
+
+        var chanceDoubleLines=predictiveDefenceThinking[1]
+        if (isSame==='different'){
+          prospectiveDoubleDangerZone.push(value);
+        }
+      }
+      squares[value]=null;
+
+
+
+    })
+    return prospectiveDoubleDangerZone;
+  }
+  thinkDanger(squares,dangerZone){
+    let randomNumber= Math.floor( Math.random() * dangerZone.length );
+    let putHere=dangerZone[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('defence')
+
+
+  }
+
+  thinkChance(squares,chanceZone){
+    let randomNumber= Math.floor( Math.random() * chanceZone.length );
+    let putHere=chanceZone[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('attack')
+
+  }
+
+  thinkLastOne(squares,lastOne){
+    let randomNumber= Math.floor( Math.random() * lastOne.length );
+    let putHere=lastOne[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+
+  }
+  thinkPrevent5(squares,prevent5){
+    let randomNumber= Math.floor( Math.random() * prevent5.length );
+    let putHere=prevent5[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+
+  }
+  thinkMake4(squares,make4){
+    let randomNumber= Math.floor( Math.random() * make4.length );
+    let putHere=make4[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+
+  }
+  thinkPrevent4(squares,prevent4){
+    let randomNumber= Math.floor( Math.random() * prevent4.length );
+    let putHere=prevent4[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+
+  }
+  thinkProspectiveChance(squares,prospectiveDoubleChanceZone){
+    let randomNumber= Math.floor( Math.random() * prospectiveDoubleChanceZone.length );
+    let putHere=prospectiveDoubleChanceZone[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('super attack!!!');
+
+  }
+  thinkProspectiveDanger(squares,prospectiveDoubleDangerZone){
+    let randomNumber= Math.floor( Math.random() * prospectiveDoubleDangerZone.length );
+    let putHere=prospectiveDoubleDangerZone[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+
+  }
+  thinkDefaultPlay(squares,defaultPlay){
+    let randomNumber= Math.floor( Math.random() * defaultPlay.length );
+    let putHere=defaultPlay[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('default')
+  }
+  thinkPrevent2(squares,prevent2){
+    let randomNumber= Math.floor( Math.random() * prevent2.length );
+    let putHere=prevent2[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('prevent2')
+
+  }
+  thinkRandomplay(squares,nullList){
+    let randomNumber= Math.floor( Math.random() * nullList.length );
+    let putHere=nullList[randomNumber]
+    squares[putHere]='X'
+    this.setState({
+      squares: squares,
+    });
+    console.log('random')
+  }
+
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }else{
+    squares[i]='O';
+    this.setState({
+      squares: squares,
+    });
+
+//ここに機能追加
+    this.think(squares);
+    }
+  }
+
+  renderSquare(i) {
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+
+
+  render(){
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+    return(
+    <div >
+      {status}
+      <div className="board-row">
+        {this.renderSquare(0)}
+        {this.renderSquare(1)}
+        {this.renderSquare(2)}
+        {this.renderSquare(3)}
+        {this.renderSquare(4)}
+        {this.renderSquare(5)}
+        {this.renderSquare(6)}
+        {this.renderSquare(7)}
+        {this.renderSquare(8)}
+        {this.renderSquare(9)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(10)}
+        {this.renderSquare(11)}
+        {this.renderSquare(12)}
+        {this.renderSquare(13)}
+        {this.renderSquare(14)}
+        {this.renderSquare(15)}
+        {this.renderSquare(16)}
+        {this.renderSquare(17)}
+        {this.renderSquare(18)}
+        {this.renderSquare(19)}
+
+      </div>
+      <div className="board-row">
+        {this.renderSquare(20)}
+        {this.renderSquare(21)}
+        {this.renderSquare(22)}
+        {this.renderSquare(23)}
+        {this.renderSquare(24)}
+        {this.renderSquare(25)}
+        {this.renderSquare(26)}
+        {this.renderSquare(27)}
+        {this.renderSquare(28)}
+        {this.renderSquare(29)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(30)}
+        {this.renderSquare(31)}
+        {this.renderSquare(32)}
+        {this.renderSquare(33)}
+        {this.renderSquare(34)}
+        {this.renderSquare(35)}
+        {this.renderSquare(36)}
+        {this.renderSquare(37)}
+        {this.renderSquare(38)}
+        {this.renderSquare(39)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(40)}
+        {this.renderSquare(41)}
+        {this.renderSquare(42)}
+        {this.renderSquare(43)}
+        {this.renderSquare(44)}
+        {this.renderSquare(45)}
+        {this.renderSquare(46)}
+        {this.renderSquare(47)}
+        {this.renderSquare(48)}
+        {this.renderSquare(49)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(50)}
+        {this.renderSquare(51)}
+        {this.renderSquare(52)}
+        {this.renderSquare(53)}
+        {this.renderSquare(54)}
+        {this.renderSquare(55)}
+        {this.renderSquare(56)}
+        {this.renderSquare(57)}
+        {this.renderSquare(58)}
+        {this.renderSquare(59)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(60)}
+        {this.renderSquare(61)}
+        {this.renderSquare(62)}
+        {this.renderSquare(63)}
+        {this.renderSquare(64)}
+        {this.renderSquare(65)}
+        {this.renderSquare(66)}
+        {this.renderSquare(67)}
+        {this.renderSquare(68)}
+        {this.renderSquare(69)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(70)}
+        {this.renderSquare(71)}
+        {this.renderSquare(72)}
+        {this.renderSquare(73)}
+        {this.renderSquare(74)}
+        {this.renderSquare(75)}
+        {this.renderSquare(76)}
+        {this.renderSquare(77)}
+        {this.renderSquare(78)}
+        {this.renderSquare(79)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(80)}
+        {this.renderSquare(81)}
+        {this.renderSquare(82)}
+        {this.renderSquare(83)}
+        {this.renderSquare(84)}
+        {this.renderSquare(85)}
+        {this.renderSquare(86)}
+        {this.renderSquare(87)}
+        {this.renderSquare(88)}
+        {this.renderSquare(89)}
+      </div>
+      <div className="board-row">
+        {this.renderSquare(90)}
+        {this.renderSquare(91)}
+        {this.renderSquare(92)}
+        {this.renderSquare(93)}
+        {this.renderSquare(94)}
+        {this.renderSquare(95)}
+        {this.renderSquare(96)}
+        {this.renderSquare(97)}
+        {this.renderSquare(98)}
+        {this.renderSquare(99)}
+      </div>
+
+
+
+    </div>
+    )
+  }
+}
+
+
+//以下勝利判定のためのリスト
+
+const horizonBasic=[0,1,2,3,4,5];
+const horizonLeaders=[]
+for (let i=0;i<10;i++){
+  let additionalHorizon=horizonBasic.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(horizonLeaders,additionalHorizon);
+}
+const horizonList=horizonLeaders.map((value)=>{
+  return [value,value+1,value+2,value+3,value+4]
+})
+
+
+
+const verticalLeaders=[];
+for (let i=0;i<60;i++){
+  verticalLeaders.push(i)
+}
+
+const verticalList=verticalLeaders.map((value)=>{
+  return [value,value+10,value+20,value+30,value+40]
+})
+
+
+
+const diagonalLeftBasic=[0,1,2,3,4,5];
+const diagonalLeftLeaders=[];
+for (let i=0;i<6;i++){
+  let additionalDiagonalLeft=diagonalLeftBasic.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(diagonalLeftLeaders,additionalDiagonalLeft);
+}
+
+
+const diagonalLeftList=diagonalLeftLeaders.map((value)=>{
+  return [value,value+11,value+22,value+33,value+44]
+})
+
+
+
+const diagonalRightLeaders=diagonalLeftLeaders.map((value)=>{
+  return value+4
+})
+const diagonalRightList=diagonalRightLeaders.map((value)=>{
+  return [value,value+9,value+18,value+27,value+36]
+})
+
+//以上が勝利判定のリスト
+
+
+
+
+
+
+
+//以下は戦闘用
+//4揃いのリスト
+const horizonBasic4=[0,1,2,3,4,5,6];
+const horizonLeaders4=[]
+for (let i=0;i<10;i++){
+  let additionalHorizon4=horizonBasic4.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(horizonLeaders4,additionalHorizon4);
+}
+
+const horizonList4=horizonLeaders4.map((value)=>{
+  return [value,value+1,value+2,value+3]
+})
+
+
+
+
+const verticalLeaders4=[];
+for (let i=0;i<70;i++){
+  verticalLeaders4.push(i)
+}
+
+const verticalList4=verticalLeaders4.map((value)=>{
+  return [value,value+10,value+20,value+30]
+})
+
+
+const diagonalLeftBasic4=[0,1,2,3,4,5,6];
+const diagonalLeftLeaders4=[];
+for (let i=0;i<7;i++){
+  let additionalDiagonalLeft4=diagonalLeftBasic4.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(diagonalLeftLeaders4,additionalDiagonalLeft4);
+}
+
+
+const diagonalLeftList4=diagonalLeftLeaders4.map((value)=>{
+  return [value,value+11,value+22,value+33]
+})
+
+
+const diagonalRightLeaders4=diagonalLeftLeaders4.map((value)=>{
+  return value+3
+})
+const diagonalRightList4=diagonalRightLeaders4.map((value)=>{
+  return [value,value+9,value+18,value+27]
+})
+
+
+const lines4=verticalList4.concat(horizonList4,diagonalLeftList4,diagonalRightList4);
+
+
+
+
+
+
+//6揃いのリスト
+const horizonBasic6=[0,1,2,3,4];
+const horizonLeaders6=[]
+for (let i=0;i<10;i++){
+  let additionalHorizon6=horizonBasic6.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(horizonLeaders6,additionalHorizon6);
+}
+
+const horizonList6=horizonLeaders6.map((value)=>{
+  return [value,value+1,value+2,value+3,value+4,value+5]
+})
+
+
+const verticalLeaders6=[];
+for (let i=0;i<50;i++){
+  verticalLeaders6.push(i)
+}
+
+const verticalList6=verticalLeaders6.map((value)=>{
+  return [value,value+10,value+20,value+30,value+40,value+50]
+})
+
+
+const diagonalLeftBasic6=[0,1,2,3,4];
+const diagonalLeftLeaders6=[];
+for (let i=0;i<5;i++){
+  let additionalDiagonalLeft6=diagonalLeftBasic6.map((value)=>{
+    return value+10*i;
+  });
+  Array.prototype.push.apply(diagonalLeftLeaders6,additionalDiagonalLeft6);
+}
+
+
+const diagonalLeftList6=diagonalLeftLeaders6.map((value)=>{
+  return [value,value+11,value+22,value+33,value+44,value+55]
+})
+
+
+
+const diagonalRightLeaders6=diagonalLeftLeaders6.map((value)=>{
+  return value+5
+})
+const diagonalRightList6=diagonalRightLeaders6.map((value)=>{
+  return [value,value+9,value+18,value+27,value+36,value+45]
+})
+
+
+const lines6=verticalList6.concat(horizonList6,diagonalLeftList6,diagonalRightList6);
+
+//以上が戦闘用リスト
+
+
+
+  const lines = verticalList.concat(horizonList,diagonalLeftList,diagonalRightList);
+function calculateWinner(squares) {
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c, d, e] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d] && squares[a] === squares[e]) {
+      return squares[a];
+    }
+
+  }
+  return null;
+}
+
+
+export default Board
