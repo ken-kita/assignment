@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+port React, { Component } from 'react'
 
 function Square(props) {
   return (
@@ -8,6 +8,21 @@ function Square(props) {
   );
 }
 
+
+/*
+コメントでは「ノーダメの」という僕が作った言葉を使っています。これは相手のマークが両端にない列のことを言っています。
+例えば、
+ノーダメの２は、null X X null
+ノーダメの３は、null X X X null
+ノーダメの４はnull X X X X null
+と言った感じです。
+ちなみに以下のようなノーダメの３ができた状況で相手がnullの部分に自分のマークを置かなければ相手は負けます
+null null X X X null
+null X X X null null
+
+以下のコードはこの考えが基本となっております。
+
+*/
 
 class Board extends React.Component{
   constructor(props) {
@@ -114,8 +129,6 @@ class Board extends React.Component{
 
 
 
-
-    //predictivethink
     var chanceZone=this.predictiveAttackThinking(squares,nullList)[0];
     var dangerZone=this.predictiveDefenceThinking(squares,nullList)[0];
     var prospectiveDoubleChanceZone=this.prospectiveChanceZoneThinking(squares,nullList)[0];
@@ -156,6 +169,8 @@ class Board extends React.Component{
     prevent2=[];
     defaultPlay=[]
   }
+
+  //ノーダメの３を一度に２つ作る。これが成功した場合、相手は両方のノーダメの３を封じることはできないので確実に勝てる。
   predictiveAttackThinking(squares,nullList){
     var chanceZone=[];
     var chanceDoubleLines=[];
@@ -166,6 +181,7 @@ class Board extends React.Component{
       let chanceDoubleLinesNumbers=[];
 
 
+//ここでlines6を使わずにあえてverticaList6やhorizonListなどに分けているのは、lines6でやるとノーダメの３がダブルカウントされてしまうです、そこでbreakを利用してダブルカウントを防いでいます・
       for(let j=0;j<verticalList6.length;j++){
         const [a,b,c,d,e,f]=verticalList6[j];
           if(squares[a]!=='O' && squares[b] ==='X'  && squares[c] === squares[b] && squares[d] === squares[b] && squares[e] ==null&&squares[f]!=='O'){
@@ -258,11 +274,11 @@ class Board extends React.Component{
 
       squares[value]=null;
     })
-
+//dangerDoubleLinesも戻り値として返すのはprospectiveChanceZoneThinking()で利用するため
     return [chanceZone,chanceDoubleLines]
   }
 
-
+//相手が"O"をおけば相手が一度にノーダメの３を二つ作ることができる場所に、あらかじめ"X"を置くことで、ノーダメの３が一度に２つ作られることを防ぐ。
   predictiveDefenceThinking(squares,nullList){
     var dangerZone=[];
     var dangerDoubleLines=[];
@@ -272,6 +288,7 @@ class Board extends React.Component{
       let dangerDoubleLinesNumbers=[];
 
 
+      //ここでlines6を使わずにあえてverticaList6やhorizonListなどに分けているのは、lines6でやるとノーダメの３がダブルカウントされてしまうです、そこでbreakを利用してダブルカウントを防いでいます・
 
       for(let j=0;j<verticalList6.length;j++){
         const [a,b,c,d,e,f]=verticalList6[j];
@@ -365,17 +382,21 @@ class Board extends React.Component{
 
       squares[value]=null;
     })
+//dangerDoubleLinesも戻り値として返すのはprospectiveDangerZoneThinking()で利用するため
     return [dangerZone,dangerDoubleLines]
   }
+
+//相手の阻止がなければ、次のターンにノーダメの３を一度に二つ作れる場所ができるように、今のターン自分のマークをうつべき場所を考える
   prospectiveChanceZoneThinking(squares,nullList){
     var prospectiveDoubleChanceZone=[];
     var prospectiveOneChanceZone=[];
+    //現在nullである場所に"X"を置いてみたと考える
     nullList.forEach((value)=>{
       squares[value]='X';
       var newNullList = nullList.filter((item)=> {
         return item !== value;
       });
-
+      //現在のターンに置いたマークのせいで、次のターンにノーダメの４になるような場所は除外するため。なぜなら、こういう置き方は相手にばれやすく、阻止されてしまうことが多いため。
       let makeBefore4=[];
       for(let i=0;i<lines6.length;i++){
         const [a,b,c,d,e,f]=lines6[i];
@@ -399,6 +420,7 @@ class Board extends React.Component{
       }else{
         let predictiveAttackThinking=this.predictiveAttackThinking(squares,newNullList);
         let futureChanceZone=predictiveAttackThinking[0];
+        //次のターンに、ノーダメの４を一度に２つ作る場所が２つ以上ある場合
         if(futureChanceZone.length>1){
           let isSame='same';
 
@@ -409,13 +431,28 @@ class Board extends React.Component{
             }
           }
 
-          var chanceDoubleLines=predictiveAttackThinking[1]
+          var chanceDoubleLines=predictiveAttackThinking[1];
           if (isSame==='different'){
+            //次のターンに、ノーダメの４を一度に２つ作る場所が２つ以上ある場合であり、かつ、その二箇所にマークした場合別々の組の２つのノーダメの４ができる場合。
             prospectiveDoubleChanceZone.push(value);
+          }else{
+            /*次のターンに、ノーダメの４を一度に２つ作る場所が２つ以上ある場合であり、かつ、その二箇所にマークした場合別々の組の２つのノーダメの４ができる場合。
+              例えば以下のような状況
+               X
+              ★　X
+              ★　　X
+              X
+
+              ここで★の場所に打てばどちらでも、ノーダメの４のいっぽ手前が２つできるが、これらは実質一箇所と考えるべき
+
+            */
+            //後から「現在のターンに置いたマークのせいで、次のターンにノーダメの４になるような場所は除外するための処理」を加えたため、上の状況は起こりえなくったので不用説が高いが、一応残した。処理が多くなるようであれば削除すべき
+            prospectiveOneChanceZone.push(value);
           }
 
 
       }else if(futureChanceZone.length===1){
+        //次のターンに、ノーダメの４を一度に２つ作る場所が1つある場合
         prospectiveOneChanceZone.push(value);
       }
 
@@ -431,10 +468,16 @@ class Board extends React.Component{
 
 
     })
+    //２つの返り血を返すのは、のターンに、ノーダメの４を一度に２つ作る場所が２つ以上ある場合の処理を優先させるため
     return [prospectiveDoubleChanceZone,prospectiveOneChanceZone];
   }
+
+  //相手が次のターンにノーダメの３を一度に二つ作れる場所ができるように、今のターン相手のマークをうつを防ぐべく。あらかじめそこに自分のマークをうつ
+
   prospectiveDoubleDangerZoneThinking(squares,aroundSelectedNullList){
     var prospectiveDoubleDangerZone=[];
+    //現在nullである場所に"X"を置いてみたと考える
+    //以下の処理はprospectiveDoubleDangerZoneThinking()とほぼ同じ
     aroundSelectedNullList.forEach((value)=>{
       squares[value]='O';
       var newAroundSelectedNullList = aroundSelectedNullList.filter((item)=> {
@@ -740,7 +783,7 @@ class Board extends React.Component{
 }
 
 
-//以下勝利判定のためのリスト
+//５列リスト
 
 const horizonBasic=[0,1,2,3,4,5];
 const horizonLeaders=[]
@@ -790,7 +833,7 @@ const diagonalRightList=diagonalRightLeaders.map((value)=>{
   return [value,value+9,value+18,value+27,value+36]
 })
 
-//以上が勝利判定のリスト
+//以上が５列リスト
 
 
 
@@ -798,8 +841,8 @@ const diagonalRightList=diagonalRightLeaders.map((value)=>{
 
 
 
-//以下は戦闘用
-//4揃いのリスト
+
+//4列リスト
 const horizonBasic4=[0,1,2,3,4,5,6];
 const horizonLeaders4=[]
 for (let i=0;i<10;i++){
@@ -851,12 +894,12 @@ const diagonalRightList4=diagonalRightLeaders4.map((value)=>{
 
 const lines4=verticalList4.concat(horizonList4,diagonalLeftList4,diagonalRightList4);
 
+//以上が４列リスト
 
 
 
 
-
-//6揃いのリスト
+//6列リスト
 const horizonBasic6=[0,1,2,3,4];
 const horizonLeaders6=[]
 for (let i=0;i<10;i++){
@@ -907,7 +950,7 @@ const diagonalRightList6=diagonalRightLeaders6.map((value)=>{
 
 const lines6=verticalList6.concat(horizonList6,diagonalLeftList6,diagonalRightList6);
 
-//以上が戦闘用リスト
+//以上が6列リスト
 
 
 
