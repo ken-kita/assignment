@@ -43,7 +43,13 @@ export default class ExampleGomokuGame extends React.Component {
 
   componentDidMount() {
     // NOTE: 初期化が完了した時点で、最初はゲームスタートから始める
+    let squares = this.state.squares.slice();
+    squares[4][4] = ExampleGomokuGame.PlayerSymbol.playerB
+    squares[4][5] = ExampleGomokuGame.PlayerSymbol.playerA
+    squares[5][4] = ExampleGomokuGame.PlayerSymbol.playerA
+    squares[5][5] = ExampleGomokuGame.PlayerSymbol.playerB
     this.setState({
+      squares: squares,
       gameStatus: ExampleGomokuGame.GameStatus.continued
     })
   }
