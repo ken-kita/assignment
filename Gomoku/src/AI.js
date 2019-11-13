@@ -13,7 +13,7 @@ export default class AI {
     if (squares[nextRow][nextColumn]) {
       for(let i =0 ; i< this.thinkBoardSize.height; i++){
         for(let j = 0; j< this.thinkBoardSize.width; j++) {
-          if(!squares[nextRow][nextColumn]) return [i,j]
+          if(!squares[i][j]) return [i,j]
         }
       }
     }

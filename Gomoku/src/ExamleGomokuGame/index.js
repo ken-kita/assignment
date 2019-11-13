@@ -145,11 +145,11 @@ export default class ExampleGomokuGame extends React.Component {
       <div >
         {this.showCurrentTurnMessage()}
         {
-          [...(new Array(10))].map( (_, i) => {
+          [...(new Array(ExampleGomokuGame.BoardSize.height))].map( (_, i) => {
             return (
               <div className="board-row" key={i}>
                 {
-                  [...(new Array(10))].map( (_, j) => {
+                  [...(new Array(ExampleGomokuGame.BoardSize.width))].map( (_, j) => {
                     return (
                       <Square
                         key={j}

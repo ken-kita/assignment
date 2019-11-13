@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import ExamleGomokuGame from './ExamleGomokuGame';
-import AI from './AI';
+import FoolAI from './AI';
 import * as serviceWorker from './serviceWorker';
 
-const foolAI = new AI({
+const foolAI = new FoolAI({
   playerSymbol: ExamleGomokuGame.PlayerSymbol.playerB,
   thinkBoardSize: ExamleGomokuGame.BoardSize
 })
