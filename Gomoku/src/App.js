@@ -1,4 +1,4 @@
-port React, { Component } from 'react'
+import React, { Component } from 'react'
 
 function Square(props) {
   return (
