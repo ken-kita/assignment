@@ -17,7 +17,7 @@ export default class ExampleGomokuGame extends React.Component {
   static DirectionVectors = {
     horizontal: [0, 1],
     vertical: [1, 0],
-    lowerLeftDirection: [-1, -1], 
+    lowerLeftDirection: [1, -1], 
     lowerRightDirection: [1, 1]
   }
 
