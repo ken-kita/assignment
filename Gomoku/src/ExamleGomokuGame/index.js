@@ -65,8 +65,8 @@ export default class ExampleGomokuGame extends React.Component {
       currentRow += directionVector[0]
       currentColumn += directionVector[1]
       if(
-        currentRow > ExampleGomokuGame.BoardSize.height ||
-        currentColumn > ExampleGomokuGame.BoardSize.width ||
+        currentRow >= ExampleGomokuGame.BoardSize.height ||
+        currentColumn >= ExampleGomokuGame.BoardSize.width ||
         currentRow < 0 ||
         currentColumn < 0 ||
         targetPlayer !== this.state.squares[currentRow][currentColumn]
@@ -122,7 +122,7 @@ export default class ExampleGomokuGame extends React.Component {
     if(
       this.state.gameStatus === ExampleGomokuGame.GameStatus.continued &&
       this.props.ai && 
-      this.currentPlayer() === this.props.ai.PlayerSymbol
+      this.currentPlayer() === this.props.ai.playerSymbol
     ) {
       let [row, column] = this.props.ai.think(this.state.squares);
       this.setBoardPosition(row,column)
@@ -154,9 +154,11 @@ export default class ExampleGomokuGame extends React.Component {
                       <Square
                         key={j}
                         value={this.state.squares[i][j]}
-                        disabled={!!this.state.squares[i][j]}
                         onClick={() => {
-                          if(this.state.gameStatus === ExampleGomokuGame.GameStatus.continued) {
+                          if(
+                            this.state.gameStatus === ExampleGomokuGame.GameStatus.continued &&
+                            !this.state.squares[i][j]
+                          ) {
                             this.setBoardPosition(i, j)
                           }
                         }}
