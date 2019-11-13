@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 
+// Advice: コードを書くときにはインデント(文頭スペース)の数とフォーマットに気をつけると
+// コードが読みやすくなります。また、そのような整形を行ってくれるツールがあるので活用しましょう。
+// ex) prettier, eslintなど
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -27,7 +31,21 @@ null X X X null null
 class Board extends React.Component{
   constructor(props) {
     super(props);
+  　// Advice: このような配列は一次元で作成しても構いませんが、
+    // 二次元配列を利用した方が管理がしやすくなります。
+    // 処理速度を早めるためにArrayを一次元にすることはあります。
+    // なぜ早くなるかは、アドレスとシーケンシャルスキャンという
+    // 概念を知る必要があり、簡単に言うと、データの保存場所
+    // を順番になぞる方が、データの保存場所を飛び飛びでアクセス
+    // するより早く探索できるというハードウェア上の挙動
+    // が関係しています。ただし、現在ではその程度のパフォーマンス
+    // チューニングをしなくても、利用に困らないため、可読性を重視しましょう。
     this.state = {
+      // Advice: ここでは配列はサイズ99で指定されていますが、100にしましょう
+      // 99でも動いてるのは、render(99)で100個目のindexにたまたま要素を
+      // 突っ込んでもあとから動かせるからです。
+      // これはjavascriptに特徴的な動きですが、一般的なプログラミング言語だと
+      // エラーになる事が多いので添字と初期化時のパラメータの対応を間違えないようにしましょう
       squares: Array(99).fill(null),
     };
   }
@@ -39,16 +57,24 @@ class Board extends React.Component{
     squares[54]='O';
     squares[55]='X';
     this.setState({squares:squares})
+ 
 
 }
+  // Advice: オブジェクト指向的にはthinkはBoardが行う動作というのは違和感があります
+  // AIというクラスなどを作ってai.thinkなどと言う風に実際のプログラムを現実に即した
+  // 表現にするとコードの可読性が上がります。
 
   think(squares){
 
 
     var prevent2=[];
     var defaultPlay=[];
+    // Advice: クラスの中でクラスのスコープの中に存在しない変数を利用することは
+    // カプセル化の原則に反しています。スコープ内の変数に入れるか、
+    // 引数で受けとるあるいは、インスタンスのstateとして初期化するようにすることが望ましいです。
     for(let i=0;i<lines4.length;i++){
       const [a,b,c,d]=lines4[i];
+        // Advice: 条件文が複数存在するときは改行して並べると可読性が上がります。
         if (squares[a]==null && squares[b]=='O' && squares[b] === squares[c] && squares[d] == null){
           prevent2.push(a,d)
         }else if(squares[a]!=='O' && squares[b]==='X' && squares[c] ==null&& squares[d] !=='O'){
@@ -58,6 +84,10 @@ class Board extends React.Component{
         }
 
     }
+    // Advice: ここから下のほとんどのコードはAIの行動パターンだと思うので、
+    // 別クラスに切り出すのが良いでしょう。また、コードのif文に対して、
+    // 重複するような処理が多いため、多くの場所で、簡略化できるはずです。
+    // 実際に修正例をお見せしますが、ご自身でも色々考えてスリムにしてみてください。
 
     var lastOne=[]
     var prevent5=[];
@@ -654,6 +684,7 @@ class Board extends React.Component{
     <div >
       {status}
       <div className="board-row">
+        {/* Advice: この辺りは,forを使うことで楽をする事ができます。 */}
         {this.renderSquare(0)}
         {this.renderSquare(1)}
         {this.renderSquare(2)}
@@ -781,6 +812,18 @@ class Board extends React.Component{
     )
   }
 }
+
+/** 
+ * 
+ *  Advice: 括弧で括られてない実装は全てこのファイルにおける狭義のglobal(top level)スコープに
+ *  なっていますが、ここでは、初期化に関わるプログラム以外は実行しない方が良いでしょう。
+ *  理由は関数やクラスなどの定義以外は、上から順番に実行されていきますが、ファイルを複数読み込む
+ *  とき、何か実行しているものがある場合それがバグを起こすと、１つ１つファイルの中身を読まないと
+ *  バグが特定しにくくなるからです。実際は関数やクラスのコンストラクターを使って、必要になるまで
+ *  実行を保留するように作ると、呼び出した先で後々必要な処理のみをプログラムに含めることができます。
+ *  また以下の処理はほとんどの場合、簡略化する事ができそうなので、色々考えてみてください。
+ *
+ **/
 
 
 //５列リスト
